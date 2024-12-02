@@ -5,7 +5,6 @@ using WinThumbsPreloader.Properties;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace WinThumbsPreloader
 {
@@ -18,36 +17,32 @@ namespace WinThumbsPreloader
         Done
     }
 
-    //Preload all thumbnails, show progress dialog
+    // Preload all thumbnails, show progress dialog
     class ThumbnailsPreloader
     {
         private DirectoryScanner directoryScanner;
         private ProgressDialog progressDialog;
         private Timer progressDialogUpdateTimer;
 
-        protected bool _multiThreaded;
-
         public ThumbnailsPreloaderState state = ThumbnailsPreloaderState.GettingNumberOfItems;
         public ThumbnailsPreloaderState prevState = ThumbnailsPreloaderState.New;
+        public bool multiThreaded;
         public int totalItemsCount = 0;
         public int processedItemsCount = 0;
         public string currentFile = "";
 
-        string executablePath = "";
-
         public ThumbnailsPreloader(string path, bool includeNestedDirectories, bool silentMode, bool multiThreaded)
         {
-            //Set the process priority to Below Normal to prevent system unresponsiveness
+            // Set the process priority to Below Normal to prevent system unresponsiveness
             using (Process p = Process.GetCurrentProcess())
                 p.PriorityClass = ProcessPriorityClass.BelowNormal;
 
-            // Single File Mode for when passing a file through the command line or preloading a .svg file
-            executablePath = Process.GetCurrentProcess().MainModule.FileName;
+            // Single file mode for when passing a file through the command line
             FileAttributes fAt = File.GetAttributes(path);
-            if (!fAt.HasFlag(FileAttributes.Directory)) // path is file and not a directory, so the application had to be run in single file mode:
+            if (!fAt.HasFlag(FileAttributes.Directory)) // The path being passed is a file and not a directory, so we can simply just preload the thumbnail for it
             {
-                ThumbnailPreloader.PreloadThumbnail(path); // generating thumbnail
-                Environment.Exit(0); //  done, let's exit this app instance
+                ThumbnailPreloader.PreloadThumbnail(path); // Thumbnail gets generated here
+                Environment.Exit(0); // The program can now exit since the file's thumbnail has been preloaded
             }
 
             // Normal mode for when passing a directory through the command line
@@ -57,7 +52,7 @@ namespace WinThumbsPreloader
                 InitProgressDialog();
                 InitProgressDialogUpdateTimer();
             }
-            _multiThreaded = multiThreaded;
+            this.multiThreaded = multiThreaded;
             Run();
         }
 
@@ -76,7 +71,7 @@ namespace WinThumbsPreloader
 
         private void InitProgressDialogUpdateTimer()
         {
-            progressDialogUpdateTimer = new System.Windows.Forms.Timer();
+            progressDialogUpdateTimer = new Timer();
             progressDialogUpdateTimer.Interval = 250;
             progressDialogUpdateTimer.Tick += new EventHandler(UpdateProgressDialog);
             progressDialogUpdateTimer.Start();
@@ -87,6 +82,11 @@ namespace WinThumbsPreloader
             if (progressDialog.HasUserCancelled)
             {
                 state = ThumbnailsPreloaderState.Canceled;
+                progressDialog.Close();
+                progressDialog?.Dispose();
+                progressDialogUpdateTimer.Stop();
+                progressDialogUpdateTimer?.Dispose();
+                return;
             }
             else if (state == ThumbnailsPreloaderState.GettingNumberOfItems)
             {
@@ -113,23 +113,28 @@ namespace WinThumbsPreloader
                 progressDialog.Line3 = String.Format(Resources.ThumbnailsPreloader_ItemsRemaining, totalItemsCount - processedItemsCount);
                 progressDialog.Value = processedItemsCount;
             }
+            else if (state == ThumbnailsPreloaderState.Done)
+            {
+                progressDialog.Close();
+                progressDialog?.Dispose();
+                progressDialogUpdateTimer.Stop();
+                progressDialogUpdateTimer?.Dispose();
+                return;
+            }
         }
 
         private async void Run()
         {
+            state = ThumbnailsPreloaderState.GettingNumberOfItems;
+            List<string> items = new List<string>();
+
             await Task.Run(() =>
             {
-                //Set the process priority to Below Normal to prevent system unresponsiveness
-                using (Process p = Process.GetCurrentProcess())
-                    p.PriorityClass = ProcessPriorityClass.BelowNormal;
-
-                state = ThumbnailsPreloaderState.GettingNumberOfItems;
-
-                List<string> items = new List<string>();
-                foreach (Tuple<int, List<string>> itemsCount in directoryScanner.GetItemsCount()) //Get items and items count
+                foreach (string item in directoryScanner.GetItems())
                 {
-                    totalItemsCount = itemsCount.Item1;
-                    items = itemsCount.Item2;
+                    items.Add(item);
+                    totalItemsCount++;
+
                     if (state == ThumbnailsPreloaderState.Canceled) return;
                 }
                 if (totalItemsCount == 0)
@@ -138,8 +143,9 @@ namespace WinThumbsPreloader
                     return;
                 }
 
-                state = ThumbnailsPreloaderState.Processing; //Start processing
-                if (!_multiThreaded)
+                // Start processing
+                state = ThumbnailsPreloaderState.Processing;
+                if (!multiThreaded)
                 {
                     foreach (string item in items)
                     {

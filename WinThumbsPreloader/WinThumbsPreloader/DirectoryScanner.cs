@@ -9,8 +9,8 @@ namespace WinThumbsPreloader
     {
         private string path;
         private bool includeNestedDirectories;
-        List<string> filesList = new List<string>();
         string[] thumbnailExtensions = ThumbnailExtensions();
+        public static string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
 
         public DirectoryScanner(string path, bool includeNestedDirectories)
         {
@@ -20,15 +20,14 @@ namespace WinThumbsPreloader
 
         public static string[] ThumbnailExtensions()
         {
-            string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
             string[] thumbnailExtensions;
             try
             {
                 thumbnailExtensions = File.ReadAllLines("ThumbnailExtensions.txt")
-                                          .SelectMany(line => line.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)) //Ignore commas and spaces between extensions written on one line
-                                          .Where(ext => !string.IsNullOrWhiteSpace(ext)) //Ignore blank lines or lines with only spaces
-                                          .Select(ext => ext.Trim(' ')).ToArray(); //Ignore spaces after the extension for each line
-                if (thumbnailExtensions == null)
+                                          .SelectMany(line => line.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)) // Ignore commas and spaces between extensions
+                                          .Where(ext => !string.IsNullOrWhiteSpace(ext)) // Ignore blank lines or lines with only spaces
+                                          .Select(ext => ext.Trim()).ToArray(); // Trim spaces around each extension
+                if (thumbnailExtensions == null || thumbnailExtensions.Length == 0)
                 {
                     thumbnailExtensions = defaultExtensions;
                 }
@@ -40,58 +39,57 @@ namespace WinThumbsPreloader
             return thumbnailExtensions;
         }
 
-        public IEnumerable<Tuple<int, List<string>>> GetItemsCount()
+        public IEnumerable<string> GetItems()
         {
-            if (includeNestedDirectories)
-            {
-                foreach (Tuple<int, List<string>> itemsCount in GetItemsCountNested()) yield return itemsCount;
-            }
-            else
-            {
-                foreach (Tuple<int, List<string>> itemsCount in GetItemsCountOnlyFirstLevel()) yield return itemsCount;
-            }
+            return includeNestedDirectories ? GetItemsNested() : GetItemsOnlyFirstLevel();
         }
 
-        private IEnumerable<Tuple<int, List<string>>> GetItemsCountOnlyFirstLevel()
+        private IEnumerable<string> GetItemsOnlyFirstLevel()
         {
+            IEnumerable<string> files = Enumerable.Empty<string>();
             try
             {
-                foreach (string file in Directory.GetFileSystemEntries(path))
-                {
-                    if (thumbnailExtensions.Contains(new FileInfo(file).Extension.TrimStart('.'), StringComparer.OrdinalIgnoreCase))
-                    {
-                        filesList.Add(file);
-                    }
-                }
+                files = Directory.GetFileSystemEntries(path)
+                                 .Where(file => thumbnailExtensions.Contains(Path.GetExtension(file).TrimStart('.'), StringComparer.OrdinalIgnoreCase));
             }
-            catch (Exception) {  } // Do nothing
-           if (filesList.Count > 0) yield return new Tuple<int, List<string>>(filesList.Count, filesList);
+            catch (Exception) { } // Do nothing
+
+            foreach (var file in files)
+            {
+                yield return file;
+            }
         }
 
-        private IEnumerable<Tuple<int, List<string>>> GetItemsCountNested()
+        private IEnumerable<string> GetItemsNested()
         {
             Queue<string> queue = new Queue<string>();
             queue.Enqueue(path);
-            string currentPath;
+
             while (queue.Count > 0)
             {
-                currentPath = queue.Dequeue();
+                string currentPath = queue.Dequeue();
+
                 try
                 {
                     foreach (string subDir in Directory.GetDirectories(currentPath))
                     {
                         queue.Enqueue(subDir);
                     }
-                    foreach (string subFiles in Directory.GetFiles(currentPath))
-                    {
-                        if (thumbnailExtensions.Contains(new FileInfo(subFiles).Extension.TrimStart('.'), StringComparer.OrdinalIgnoreCase) || thumbnailExtensions.Length == 0)
-                        {
-                            filesList.Add(subFiles);
-                        }
-                    }
                 }
-                catch (Exception) {  } // Do nothing
-                if (filesList.Count > 0) yield return new Tuple<int, List<string>>(filesList.Count, filesList);
+                catch (Exception) { } // Do nothing
+
+                IEnumerable<string> files = Enumerable.Empty<string>();
+                try
+                {
+                    files = Directory.GetFiles(currentPath)
+                                     .Where(file => thumbnailExtensions.Contains(Path.GetExtension(file).TrimStart('.'), StringComparer.OrdinalIgnoreCase));
+                }
+                catch (Exception) { } // Do nothing
+
+                foreach (var file in files)
+                {
+                    yield return file;
+                }
             }
         }
     }
