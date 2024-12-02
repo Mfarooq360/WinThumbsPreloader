@@ -192,6 +192,13 @@
   <data name="ExtensionsButton.Text" xml:space="preserve">
     <value>Extensions</value>
   </data>
+  <metadata name="ExtensionsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="ExtensionsButton.ToolTip" xml:space="preserve">
+    <value>Choose which extensions to process for thumbnail generation
+Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at</value>
+  </data>
   <data name="&gt;&gt;ExtensionsButton.Name" xml:space="preserve">
     <value>ExtensionsButton</value>
   </data>
@@ -221,6 +228,9 @@
   </data>
   <data name="ResetButton.Text" xml:space="preserve">
     <value>Reset</value>
+  </data>
+  <data name="ResetButton.ToolTip" xml:space="preserve">
+    <value>Resets the extensions list to use default extensions</value>
   </data>
   <data name="&gt;&gt;ResetButton.Name" xml:space="preserve">
     <value>ResetButton</value>
@@ -281,21 +291,6 @@
   </data>
   <data name="&gt;&gt;BottomPanel.ZOrder" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="button1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;button1.Name" xml:space="preserve">
-    <value>button1</value>
-  </data>
-  <data name="&gt;&gt;button1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="BorderTop.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
@@ -508,6 +503,12 @@ Copyright (c) 2018 Dmitry Bruhov</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>WinThumbsPreloader - About</value>
+  </data>
+  <data name="&gt;&gt;ExtensionsToolTip.Name" xml:space="preserve">
+    <value>ExtensionsToolTip</value>
+  </data>
+  <data name="&gt;&gt;ExtensionsToolTip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>AboutForm</value>
