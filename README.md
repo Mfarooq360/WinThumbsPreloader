@@ -14,5 +14,5 @@ Download HEIF/HEIC extension for Windows: https://www.microsoft.com/en-us/p/heif
 
 -m : Multi-threaded generation
 
-### Download standalone: [WinThumbsPreloader.exe](https://github.com/Mfarooq360/WinThumbsPreloader/releases/download/v1.1.0/WinThumbsPreloader.exe)
-### Download SETUP: [WinThumbsPreloader-1.1.0-setup.exe](https://github.com/Mfarooq360/WinThumbsPreloader/releases/download/v1.1.0/WinThumbsPreloader-1.1.0-setup.exe)
+### Download standalone: [WinThumbsPreloader.exe](https://github.com/Mfarooq360/WinThumbsPreloader/releases/download/v1.1.1/WinThumbsPreloader.exe)
+### Download SETUP: [WinThumbsPreloader-1.1.1-setup.exe](https://github.com/Mfarooq360/WinThumbsPreloader/releases/download/v1.1.1/WinThumbsPreloader-1.1.1-setup.exe)
