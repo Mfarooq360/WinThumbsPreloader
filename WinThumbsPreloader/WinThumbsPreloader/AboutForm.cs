@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
-using System.Reflection;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +16,38 @@ namespace WinThumbsPreloader
         public AboutForm()
         {
             InitializeComponent();
+            this.KeyPreview = true;
+            this.KeyDown += AboutForm_KeyDown;
+            this.KeyUp += AboutForm_KeyUp;
+            this.Activated += AboutForm_Activated;
+        }
+
+        private void AboutForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                ExtensionsButton.Text = "Open Folder";
+            }
+        }
+
+        private void AboutForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                ExtensionsButton.Text = "Extensions";
+            }
+        }
+
+        private void AboutForm_Activated(object sender, EventArgs e)
+        {
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                ExtensionsButton.Text = "Open Folder";
+            }
+            else
+            {
+                ExtensionsButton.Text = "Extensions";
+            }
         }
 
         private void AboutForm_Load(object sender, EventArgs e)
@@ -35,15 +67,15 @@ namespace WinThumbsPreloader
 
         private async void CheckForUpdates()
         {
-            UpdateState updateState = await Task.Run(() =>
+            UpdateState updateState = await Task.Run(async () =>
             {
                 try
                 {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    using (WebClient client = new WebClient())
+                    using (HttpClient client = new HttpClient())
                     {
-                        client.Headers.Add("User-Agent", "WinThumbPreloader");
-                        string GitHubApiResponse = client.DownloadString("https://api.github.com/repos/Mfarooq360/WinThumbsPreloader/releases/latest");
+                        client.DefaultRequestHeaders.UserAgent.ParseAdd("WinThumbPreloader");
+                        string GitHubApiResponse = await client.GetStringAsync("https://api.github.com/repos/Mfarooq360/WinThumbsPreloader/releases/latest");
                         string latestVersionString = Regex.Match(GitHubApiResponse, @"""tag_name"":\s*""v([\d\.]+)").Groups[1].Captures[0].ToString();
                         Version currentVersion = new Version(Application.ProductVersion);
                         Version latestVersion = new Version(latestVersionString);
@@ -79,7 +111,7 @@ namespace WinThumbsPreloader
 
         private void LicenceButton_Click(object sender, EventArgs e)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "LICENSE.txt");
+            string path = Path.Combine(AppContext.BaseDirectory, "LICENSE.txt");
             try
             {
                 Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
@@ -87,25 +119,93 @@ namespace WinThumbsPreloader
             catch (Exception) { } // Do nothing
         }
 
-        string[] defaultExtensions = new string[] { "avif", "bmp", "gif", "heic", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
+        string[] defaultExtensions = DirectoryScanner.defaultExtensions;
         private void ExtensionsButton_Click(object sender, EventArgs e)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ThumbnailExtensions.txt");
+            string executablePath = AppContext.BaseDirectory;
+            string programFilesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string programFilesThumbsPreloaderFolder = Path.Combine(programFilesFolder, "WinThumbsPreloader");
+            string programFilesExtensionsPath = Path.Combine(programFilesThumbsPreloaderFolder, "ThumbnailExtensions.txt");
+            string programDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinThumbsPreloader");
+            string programDataPath = Path.Combine(programDataFolder, "ThumbnailExtensions.txt");
+            string filePath;
+
+            if (executablePath.StartsWith(programFilesFolder, StringComparison.OrdinalIgnoreCase) &&
+                executablePath.IndexOf("WinThumbsPreloader", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (!Directory.Exists(programDataFolder))
+                {
+                    Directory.CreateDirectory(programDataFolder);
+                }
+
+                if (File.Exists(programFilesExtensionsPath) && !File.Exists(programDataPath))
+                {
+                    File.Copy(programFilesExtensionsPath, programDataPath);
+                }
+
+                filePath = programDataPath;
+            }
+            else
+            {
+                filePath = Path.Combine(executablePath, "ThumbnailExtensions.txt");
+            }
+
             try
             {
-                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                if (ExtensionsButton.Text == "Open Folder")
+                {
+                    string folderPath = Path.GetDirectoryName(filePath);
+                    Process.Start(new ProcessStartInfo(folderPath) { UseShellExecute = true });
+                }
+                else
+                {
+                    if (!File.Exists(filePath))
+                    {
+                        File.WriteAllLines(filePath, defaultExtensions);
+                    }
+
+                    Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                File.WriteAllLines(path, defaultExtensions);
-                Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                MessageBox.Show($"Error: {ex.Message}", "Failed to open or create ThumbnailExtensions.txt", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+
         private void ResetButton_Click(object sender, EventArgs e)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ThumbnailExtensions.txt");
-            File.WriteAllLines(path, defaultExtensions);
+            string executablePath = AppContext.BaseDirectory;
+            string programFilesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string programDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinThumbsPreloader");
+            string programDataPath = Path.Combine(programDataFolder, "ThumbnailExtensions.txt");
+
+            string filePath;
+
+            if (executablePath.StartsWith(programFilesFolder, StringComparison.OrdinalIgnoreCase) &&
+                executablePath.IndexOf("WinThumbsPreloader", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (!Directory.Exists(programDataFolder))
+                {
+                    Directory.CreateDirectory(programDataFolder);
+                }
+                filePath = programDataPath;
+            }
+            else
+            {
+                filePath = Path.Combine(executablePath, "ThumbnailExtensions.txt");
+            }
+
+            try
+            {
+                File.WriteAllLines(filePath, defaultExtensions);
+                MessageBox.Show("ThumbnailExtensions.txt has been reset successfully.", "Reset Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + " Try restarting the program as Admin.", "Failed to reset ThumbnailExtensions.txt", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void RichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)

@@ -31,6 +31,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.CloseButton = new System.Windows.Forms.Button();
             this.LicenceButton = new System.Windows.Forms.Button();
@@ -45,8 +46,7 @@
             this.AppNameLabel = new System.Windows.Forms.Label();
             this.ContentPanel = new System.Windows.Forms.Panel();
             this.RichTextBox = new System.Windows.Forms.RichTextBox();
-            this.ExtensionsToolTip = new System.Windows.Forms.ToolTip();
-            this.ResetToolTip = new System.Windows.Forms.ToolTip();
+            this.ExtensionsToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.BottomPanel.SuspendLayout();
             this.HeaderPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AppIconPictureBox)).BeginInit();
@@ -71,17 +71,17 @@
             // 
             resources.ApplyResources(this.ExtensionsButton, "ExtensionsButton");
             this.ExtensionsButton.Name = "ExtensionsButton";
+            this.ExtensionsToolTip.SetToolTip(this.ExtensionsButton, resources.GetString("ExtensionsButton.ToolTip"));
             this.ExtensionsButton.UseVisualStyleBackColor = true;
             this.ExtensionsButton.Click += new System.EventHandler(this.ExtensionsButton_Click);
-            this.ExtensionsToolTip.SetToolTip(this.ExtensionsButton, "Choose which extensions to process for thumbnail generation");
             // 
             // ResetButton
             // 
             resources.ApplyResources(this.ResetButton, "ResetButton");
             this.ResetButton.Name = "ResetButton";
+            this.ExtensionsToolTip.SetToolTip(this.ResetButton, resources.GetString("ResetButton.ToolTip"));
             this.ResetButton.UseVisualStyleBackColor = true;
             this.ResetButton.Click += new System.EventHandler(this.ResetButton_Click);
-            this.ResetToolTip.SetToolTip(this.ResetButton, "Resets the extensions list to use default extensions");
             // 
             // BorderBottom
             // 
@@ -187,7 +187,6 @@
         private System.Windows.Forms.Label UpdateLabel;
         private System.Windows.Forms.Button ResetButton;
         private System.Windows.Forms.ToolTip ExtensionsToolTip;
-        private System.Windows.Forms.ToolTip ResetToolTip;
     }
 }
 
