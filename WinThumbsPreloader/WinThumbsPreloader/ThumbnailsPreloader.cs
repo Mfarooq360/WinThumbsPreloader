@@ -30,23 +30,29 @@ namespace WinThumbsPreloader
         public int totalItemsCount = 0;
         public int processedItemsCount = 0;
         public string currentFile = "";
+        private int threadCount;
+        private List<int> thumbnailSizes;
 
-        public ThumbnailsPreloader(string path, bool includeNestedDirectories, bool silentMode, bool multiThreaded)
+        public ThumbnailsPreloader(string path, bool includeNestedDirectories, bool silentMode, bool multiThreaded, List<string> extensions, int threadCount = 0, List<int> thumbnailSizes = null)
         {
             // Set the process priority to Below Normal to prevent system unresponsiveness
             using (Process p = Process.GetCurrentProcess())
                 p.PriorityClass = ProcessPriorityClass.BelowNormal;
 
+            this.thumbnailSizes = thumbnailSizes ?? new List<int> { 256 }; // Default to 256 if no sizes provided
+
             // Single file mode for when passing a file through the command line
             FileAttributes fAt = File.GetAttributes(path);
             if (!fAt.HasFlag(FileAttributes.Directory)) // The path being passed is a file and not a directory, so we can simply just preload the thumbnail for it
             {
-                ThumbnailPreloader.PreloadThumbnail(path); // Thumbnail gets generated here
+                ThumbnailPreloader.PreloadThumbnail(path, thumbnailSizes); // Default size if none provided
                 Environment.Exit(0); // The program can now exit since the file's thumbnail has been preloaded
             }
 
+            this.threadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount; // Use specified or default thread count
+
             // Normal mode for when passing a directory through the command line
-            directoryScanner = new DirectoryScanner(path, includeNestedDirectories);
+            directoryScanner = new DirectoryScanner(path, includeNestedDirectories, multiThreaded, extensions, this.threadCount);
             if (!silentMode)
             {
                 InitProgressDialog();
@@ -82,6 +88,7 @@ namespace WinThumbsPreloader
             if (progressDialog.HasUserCancelled)
             {
                 state = ThumbnailsPreloaderState.Canceled;
+                directoryScanner.cancelled = true;
                 progressDialog.Close();
                 progressDialog?.Dispose();
                 progressDialogUpdateTimer.Stop();
@@ -97,6 +104,7 @@ namespace WinThumbsPreloader
                     progressDialog.Line3 = Resources.ThumbnailsPreloader_CalculatingNumberOfItems;
                     progressDialog.Marquee = true;
                 }
+                totalItemsCount = directoryScanner.totalItemsCount; // Placed here to only update when needed by the progress dialog
                 progressDialog.Line2 = String.Format(Resources.ThumbnailsPreloader_Discovered0Items, totalItemsCount);
             }
             else if (state == ThumbnailsPreloaderState.Processing)
@@ -130,16 +138,15 @@ namespace WinThumbsPreloader
 
             await Task.Run(() =>
             {
-                foreach (string item in directoryScanner.GetItems())
-                {
-                    items.Add(item);
-                    totalItemsCount++;
-
-                    if (state == ThumbnailsPreloaderState.Canceled) return;
-                }
+                items = directoryScanner.GetItems();
+                totalItemsCount = directoryScanner.totalItemsCount; // This is also here in case the program is run in silent mode
                 if (totalItemsCount == 0)
                 {
                     state = ThumbnailsPreloaderState.Done;
+                    return;
+                }
+                else if (state == ThumbnailsPreloaderState.Canceled)
+                {
                     return;
                 }
 
@@ -152,7 +159,7 @@ namespace WinThumbsPreloader
                         try
                         {
                             currentFile = item;
-                            ThumbnailPreloader.PreloadThumbnail(item);
+                            ThumbnailPreloader.PreloadThumbnail(item, thumbnailSizes);
                             processedItemsCount++;
                             if (processedItemsCount == totalItemsCount) state = ThumbnailsPreloaderState.Done;
                             if (state == ThumbnailsPreloaderState.Canceled) Application.Exit();
@@ -164,16 +171,20 @@ namespace WinThumbsPreloader
                 {
                     Parallel.ForEach(
                         items,
-                        new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-                        item =>
+                        new ParallelOptions { MaxDegreeOfParallelism = threadCount },
+                        (item, parallelLoopState) =>
                         {
                             try
                             {
                                 currentFile = item;
-                                ThumbnailPreloader.PreloadThumbnail(item);
-                                processedItemsCount++;
+                                ThumbnailPreloader.PreloadThumbnail(item, thumbnailSizes);
+                                processedItemsCount++; 
                                 if (processedItemsCount == totalItemsCount) state = ThumbnailsPreloaderState.Done;
-                                if (state == ThumbnailsPreloaderState.Canceled) Application.Exit();
+                                if (state == ThumbnailsPreloaderState.Canceled)
+                                {
+                                    parallelLoopState.Break();
+                                    return;
+                                }
                             }
                             catch (Exception) { } // Do nothing
                         });

@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Documents;
 
 namespace WinThumbsPreloader
 {
@@ -16,20 +19,31 @@ namespace WinThumbsPreloader
             return (IThumbnailCache)Activator.CreateInstance(TBCacheType);
         });
 
-        public static void PreloadThumbnail(string filePath)
+        public static void PreloadThumbnail(string filePath, List<int> sizes)
         {
             IShellItem shellItem = null;
-            ISharedBitmap bmp = null;
 
             try
             {
                 SHCreateItemFromParsingName(filePath, IntPtr.Zero, IID_IShellItem, out shellItem);
-                TBCache.Value.GetThumbnail(shellItem, 128, WTS_FLAGS.WTS_EXTRACTINPROC, out bmp, out _, out _);
+
+                foreach (int size in sizes)
+                {
+                    ISharedBitmap bmp = null;
+                    try
+                    {
+                        TBCache.Value.GetThumbnail(shellItem, (uint)size, WTS_FLAGS.WTS_EXTRACTINPROC, out bmp, out _, out _);
+                    }
+                    catch (Exception) { } // Do nothing
+                    finally
+                    {
+                        if (bmp != null) Marshal.ReleaseComObject(bmp);
+                    }
+                }
             }
             catch (Exception) { } // Do nothing
             finally
             {
-                if (bmp != null) Marshal.ReleaseComObject(bmp);
                 if (shellItem != null) Marshal.ReleaseComObject(shellItem);
             }
         }
