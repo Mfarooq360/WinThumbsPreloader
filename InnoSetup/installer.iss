@@ -5,7 +5,8 @@
 #dim Version[4]
 #expr GetVersionComponents(MyAppFilepath, Version[0], Version[1], Version[2], Version[3])
 #define MyAppVersion Str(Version[0]) + "." + Str(Version[1]) + "." + Str(Version[2])
-#define MyAppPublisher "Dmitry Bruhov, inthebrilliantblue, arturdd, Mfarooq360"
+#define MyAppPublisher1 "Dmitry Bruhov"
+#define MyAppPublisher2 "Mutahar Farooq"
 #define MyAppId "CF49DD18-AA76-4E79-97C2-4FEAED1AED5F"
 
 //#include <idp.iss>
@@ -13,14 +14,14 @@
 #include "environment.iss"
 
 [Setup]
-AppCopyright=Copyright (c) 2023 {#MyAppPublisher}
+AppCopyright=Copyright (c) 2018 {#MyAppPublisher1}, Copyright (c) 2025 {#MyAppPublisher2}
 AppId={#MyAppId}
 AppMutex={#MyAppId}
 AppName={#MyAppName}
-AppPublisher={#MyAppPublisher}
+AppPublisher={#MyAppPublisher1}, {#MyAppPublisher2}
 AppPublisherURL=https://github.com/Mfarooq360/WinThumbsPreloader
-AppSupportURL=https://github.com/bruhov/WinThumbsPreloader/issues
-AppUpdatesURL=https://github.com/bruhov/WinThumbsPreloader/releases
+AppSupportURL=https://github.com/Mfarooq360/WinThumbsPreloader/issues
+AppUpdatesURL=https://github.com/Mfarooq360/WinThumbsPreloader/releases
 AppVerName={#MyAppName} {#MyAppVersion}
 AppVersion={#MyAppVersion}
 ArchitecturesAllowed=x86 x64
