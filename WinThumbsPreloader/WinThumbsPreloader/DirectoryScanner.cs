@@ -1,23 +1,31 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WinThumbsPreloader
 {
     class DirectoryScanner
     {
+        public int totalItemsCount = 0;
         private string path;
+        public bool cancelled = false;
         private bool includeNestedDirectories;
-        string[] thumbnailExtensions = ThumbnailExtensions();
-        public static string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
+        private bool multiThreaded;
+        private int threadCount;
         private string[] thumbnailExtensions;
         public static string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "heif", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
 
-        public DirectoryScanner(string path, bool includeNestedDirectories)
+        public DirectoryScanner(string path, bool includeNestedDirectories, bool multiThreaded, IEnumerable<string> commandLineExtensions = null, int threadCount = 0)
         {
             this.path = path;
             this.includeNestedDirectories = includeNestedDirectories;
+            this.multiThreaded = multiThreaded;
+            this.threadCount = threadCount > 0 ? threadCount : Environment.ProcessorCount;
+
             thumbnailExtensions = GetThumbnailExtensions(commandLineExtensions);
         }
 
@@ -45,36 +53,42 @@ namespace WinThumbsPreloader
 
             return defaultExtensions;
         }
-            {
-                thumbnailExtensions = defaultExtensions;
-            }
-            return thumbnailExtensions;
+
+        public List<string> GetItems()
+        {
+            return includeNestedDirectories
+                ? (multiThreaded ? GetItemsNestedParallel() : GetItemsNested())
+                : GetItemsOnlyFirstLevel();
         }
 
-        public IEnumerable<string> GetItems()
+        private bool ShouldIncludeFile(string file)
         {
-            return includeNestedDirectories ? GetItemsNested() : GetItemsOnlyFirstLevel();
+            return thumbnailExtensions.Contains(Path.GetExtension(file).TrimStart('.'), StringComparer.OrdinalIgnoreCase) || thumbnailExtensions.Length == 0;
         }
 
-        private IEnumerable<string> GetItemsOnlyFirstLevel()
+        private List<string> GetItemsOnlyFirstLevel()
         {
-            IEnumerable<string> files = Enumerable.Empty<string>();
+            var scannedFiles = new List<string>();
             try
             {
-                files = Directory.GetFileSystemEntries(path)
-                                 .Where(file => thumbnailExtensions.Contains(Path.GetExtension(file).TrimStart('.'), StringComparer.OrdinalIgnoreCase));
+                foreach (string file in Directory.EnumerateFiles(path))
+                {
+                    if (ShouldIncludeFile(file))
+                    {
+                        scannedFiles.Add(file);
+                        totalItemsCount++;
+                    }
+                    if (cancelled) break;
+                }
             }
-            catch (Exception) { } // Do nothing
-
-            foreach (var file in files)
-            {
-                yield return file;
-            }
+            catch (Exception) { }
+            return scannedFiles;
         }
 
-        private IEnumerable<string> GetItemsNested()
+        private List<string> GetItemsNested()
         {
-            Queue<string> queue = new Queue<string>();
+            var scannedFiles = new List<string>();
+            var queue = new Queue<string>();
             queue.Enqueue(path);
 
             while (queue.Count > 0)
@@ -83,26 +97,89 @@ namespace WinThumbsPreloader
 
                 try
                 {
-                    foreach (string subDir in Directory.GetDirectories(currentPath))
+                    foreach (string subDir in Directory.EnumerateDirectories(currentPath))
                     {
                         queue.Enqueue(subDir);
+                        if (cancelled) break;
                     }
                 }
-                catch (Exception) { } // Do nothing
+                catch (Exception) { }
 
-                IEnumerable<string> files = Enumerable.Empty<string>();
                 try
                 {
-                    files = Directory.GetFiles(currentPath)
-                                     .Where(file => thumbnailExtensions.Contains(Path.GetExtension(file).TrimStart('.'), StringComparer.OrdinalIgnoreCase));
+                    foreach (string file in Directory.EnumerateFiles(currentPath))
+                    {
+                        if (ShouldIncludeFile(file))
+                        {
+                            scannedFiles.Add(file);
+                            totalItemsCount++;
+                        }
+                        if (cancelled) break;
+                    }
                 }
-                catch (Exception) { } // Do nothing
-
-                foreach (var file in files)
-                {
-                    yield return file;
-                }
+                catch (Exception) { }
+                if (cancelled) break;
             }
+            return scannedFiles;
+        }
+
+        private List<string> GetItemsNestedParallel()
+        {
+            var scannedFiles = new ConcurrentBag<string>();
+            var directoriesToProcess = new BlockingCollection<string> { path };
+            int activeThreads = 0;
+
+            Parallel.ForEach(
+                directoriesToProcess.GetConsumingEnumerable(),
+                new ParallelOptions { MaxDegreeOfParallelism = threadCount },
+                currentPath =>
+                {
+                    Interlocked.Increment(ref activeThreads);
+
+                    try
+                    {
+                        foreach (string subDir in Directory.EnumerateDirectories(currentPath))
+                        {
+                            if (cancelled)
+                            {
+                                directoriesToProcess.CompleteAdding();
+                                foreach (string dir in directoriesToProcess.GetConsumingEnumerable()) { }
+                                break;
+                            }
+
+                            directoriesToProcess.Add(subDir);
+                        }
+                    }
+                    catch (Exception) { }
+
+                    try
+                    {
+                        foreach (string file in Directory.EnumerateFiles(currentPath))
+                        {
+                            if (cancelled)
+                            {
+                                directoriesToProcess.CompleteAdding();
+                                foreach (string dir in directoriesToProcess.GetConsumingEnumerable()) { }
+                                break;
+                            }
+
+                            if (ShouldIncludeFile(file))
+                            {
+                                scannedFiles.Add(file);
+                                totalItemsCount++;
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+
+                    if (Interlocked.Decrement(ref activeThreads) == 0 && directoriesToProcess.Count == 0)
+                    {
+                        directoriesToProcess.CompleteAdding();
+                    }
+                });
+
+            return scannedFiles.OrderBy(file => file, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
+
 }
