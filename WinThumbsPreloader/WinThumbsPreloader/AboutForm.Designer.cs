@@ -145,7 +145,6 @@
             resources.ApplyResources(this.RichTextBox, "RichTextBox");
             this.RichTextBox.Name = "RichTextBox";
             this.RichTextBox.ReadOnly = true;
-            this.RichTextBox.ShortcutsEnabled = false;
             this.RichTextBox.TabStop = false;
             this.RichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.RichTextBox_LinkClicked);
             // 
