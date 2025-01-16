@@ -82,3 +82,5 @@ C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPrelo
 C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPreloader\obj\Release\WinThumbsPreloader.application
 C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPreloader\obj\Release\WinThumbsPreloader.exe
 C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPreloader\obj\Release\WinThumbsPreloader.pdb
+C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPreloader\obj\Release\WinThumbsPreloader.ExtensionsForm.resources
+C:\Users\mutah\Source\Repos\WinThumbsPreloader\WinThumbsPreloader\WinThumbsPreloader\obj\Release\WinThumbsPreloader.HelpForm.resources

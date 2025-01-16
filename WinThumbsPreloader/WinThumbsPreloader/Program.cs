@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace WinThumbsPreloader
@@ -28,9 +29,39 @@ namespace WinThumbsPreloader
             }
             else
             {
-                new ThumbnailsPreloader(options.path, options.includeNestedDirectories, options.silentMode, options.multithreaded);
+                new ThumbnailsPreloader(options.path, options.includeNestedDirectories, options.silentMode, options.multithreaded, options.extensions, options.threadCount, options.thumbnailSizes);
                 Application.Run();
             }
+        }
+        public static void OpenFormCentered(this Form currentForm, Form newForm)
+        {
+            currentForm.Hide();
+            newForm.FormClosed += (s, args) =>
+            {
+                currentForm.Location = new Point(newForm.Location.X + (newForm.Width - currentForm.Width) / 2,
+                                                 newForm.Location.Y + (newForm.Height - currentForm.Height) / 2);
+                currentForm.Show();
+            };
+
+            newForm.StartPosition = FormStartPosition.Manual;
+            newForm.Location = new Point(currentForm.Location.X + (currentForm.Width - newForm.Width) / 2,
+                                         currentForm.Location.Y + (currentForm.Height - newForm.Height) / 2);
+            newForm.Owner = currentForm;
+            newForm.ShowDialog();
+        }
+
+        public static void OpenSecondaryFormCentered(this Form currentForm, Form newForm)
+        {
+            newForm.FormClosed += (s, args) =>
+            {
+                currentForm.Focus();
+            };
+
+            newForm.StartPosition = FormStartPosition.Manual;
+            newForm.Location = new Point(currentForm.Location.X + (currentForm.Width - newForm.Width) / 2,
+                                         currentForm.Location.Y + (currentForm.Height - newForm.Height) / 2);
+            newForm.Owner = currentForm;
+            newForm.Show();
         }
     }
 }
