@@ -36,9 +36,9 @@
             this.CloseButton = new System.Windows.Forms.Button();
             this.LicenceButton = new System.Windows.Forms.Button();
             this.ExtensionsButton = new System.Windows.Forms.Button();
-            this.ResetButton = new System.Windows.Forms.Button();
             this.BorderBottom = new System.Windows.Forms.Label();
             this.BottomPanel = new System.Windows.Forms.Panel();
+            this.HelpButton = new System.Windows.Forms.Button();
             this.BorderTop = new System.Windows.Forms.Label();
             this.HeaderPanel = new System.Windows.Forms.Panel();
             this.AppIconPictureBox = new System.Windows.Forms.PictureBox();
@@ -75,14 +75,6 @@
             this.ExtensionsButton.UseVisualStyleBackColor = true;
             this.ExtensionsButton.Click += new System.EventHandler(this.ExtensionsButton_Click);
             // 
-            // ResetButton
-            // 
-            resources.ApplyResources(this.ResetButton, "ResetButton");
-            this.ResetButton.Name = "ResetButton";
-            this.ExtensionsToolTip.SetToolTip(this.ResetButton, resources.GetString("ResetButton.ToolTip"));
-            this.ResetButton.UseVisualStyleBackColor = true;
-            this.ResetButton.Click += new System.EventHandler(this.ResetButton_Click);
-            // 
             // BorderBottom
             // 
             this.BorderBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(223)))), ((int)(((byte)(223)))), ((int)(((byte)(223)))));
@@ -92,12 +84,20 @@
             // BottomPanel
             // 
             this.BottomPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.BottomPanel.Controls.Add(this.ResetButton);
+            this.BottomPanel.Controls.Add(this.HelpButton);
             this.BottomPanel.Controls.Add(this.ExtensionsButton);
             this.BottomPanel.Controls.Add(this.CloseButton);
             this.BottomPanel.Controls.Add(this.LicenceButton);
             resources.ApplyResources(this.BottomPanel, "BottomPanel");
             this.BottomPanel.Name = "BottomPanel";
+            // 
+            // HelpButton
+            // 
+            resources.ApplyResources(this.HelpButton, "HelpButton");
+            this.HelpButton.Name = "HelpButton";
+            this.ExtensionsToolTip.SetToolTip(this.HelpButton, resources.GetString("HelpButton.ToolTip"));
+            this.HelpButton.UseVisualStyleBackColor = true;
+            this.HelpButton.Click += new System.EventHandler(this.HelpButton_Click);
             // 
             // BorderTop
             // 
@@ -185,8 +185,8 @@
         private System.Windows.Forms.Panel ContentPanel;
         private System.Windows.Forms.RichTextBox RichTextBox;
         private System.Windows.Forms.Label UpdateLabel;
-        private System.Windows.Forms.Button ResetButton;
         private System.Windows.Forms.ToolTip ExtensionsToolTip;
+        private System.Windows.Forms.Button HelpButton;
     }
 }
 

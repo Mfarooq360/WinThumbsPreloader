@@ -123,7 +123,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="CloseButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>302, 9</value>
+    <value>300, 9</value>
   </data>
   <data name="CloseButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 25</value>
@@ -154,7 +154,7 @@
     <value>NoControl</value>
   </data>
   <data name="LicenceButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>221, 9</value>
+    <value>219, 9</value>
   </data>
   <data name="LicenceButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 25</value>
@@ -177,6 +177,9 @@
   <data name="&gt;&gt;LicenceButton.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <metadata name="ExtensionsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <data name="ExtensionsButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
   </data>
@@ -192,12 +195,9 @@
   <data name="ExtensionsButton.Text" xml:space="preserve">
     <value>Extensions</value>
   </data>
-  <metadata name="ExtensionsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
   <data name="ExtensionsButton.ToolTip" xml:space="preserve">
     <value>Choose which extensions to process for thumbnail generation
-Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at</value>
+Holding "SHIFT" will open the folder where the program's executable is located at</value>
   </data>
   <data name="&gt;&gt;ExtensionsButton.Name" xml:space="preserve">
     <value>ExtensionsButton</value>
@@ -211,47 +211,14 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
   <data name="&gt;&gt;ExtensionsButton.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="ResetButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <data name="ResetButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="ResetButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 9</value>
-  </data>
-  <data name="ResetButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 25</value>
-  </data>
-  <data name="ResetButton.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="ResetButton.Text" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="ResetButton.ToolTip" xml:space="preserve">
-    <value>Resets the extensions list to use default extensions</value>
-  </data>
-  <data name="&gt;&gt;ResetButton.Name" xml:space="preserve">
-    <value>ResetButton</value>
-  </data>
-  <data name="&gt;&gt;ResetButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;ResetButton.Parent" xml:space="preserve">
-    <value>BottomPanel</value>
-  </data>
-  <data name="&gt;&gt;ResetButton.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="BorderBottom.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
   <data name="BorderBottom.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 315</value>
+    <value>0, 317</value>
   </data>
   <data name="BorderBottom.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 1</value>
+    <value>384, 1</value>
   </data>
   <data name="BorderBottom.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -268,14 +235,26 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
   <data name="&gt;&gt;BorderBottom.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="&gt;&gt;HelpButton.Name" xml:space="preserve">
+    <value>HelpButton</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.Parent" xml:space="preserve">
+    <value>BottomPanel</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="BottomPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
   <data name="BottomPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 316</value>
+    <value>0, 318</value>
   </data>
   <data name="BottomPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 43</value>
+    <value>384, 43</value>
   </data>
   <data name="BottomPanel.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -292,6 +271,43 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
   <data name="&gt;&gt;BottomPanel.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="HelpButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="HelpButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="HelpButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>138, 9</value>
+  </data>
+  <data name="HelpButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 25</value>
+  </data>
+  <data name="HelpButton.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="HelpButton.Text" xml:space="preserve">
+    <value>Help / FAQ</value>
+  </data>
+  <data name="HelpButton.ToolTip" xml:space="preserve">
+    <value>Detailed information about the program including
+how it works and how to use it</value>
+  </data>
+  <data name="HelpButton.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.Name" xml:space="preserve">
+    <value>HelpButton</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.Parent" xml:space="preserve">
+    <value>BottomPanel</value>
+  </data>
+  <data name="&gt;&gt;HelpButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="BorderTop.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Top</value>
   </data>
@@ -299,7 +315,7 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
     <value>0, 68</value>
   </data>
   <data name="BorderTop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 1</value>
+    <value>384, 1</value>
   </data>
   <data name="BorderTop.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -315,6 +331,66 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
   </data>
   <data name="&gt;&gt;BorderTop.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;AppIconPictureBox.Name" xml:space="preserve">
+    <value>AppIconPictureBox</value>
+  </data>
+  <data name="&gt;&gt;AppIconPictureBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AppIconPictureBox.Parent" xml:space="preserve">
+    <value>HeaderPanel</value>
+  </data>
+  <data name="&gt;&gt;AppIconPictureBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;UpdateLabel.Name" xml:space="preserve">
+    <value>UpdateLabel</value>
+  </data>
+  <data name="&gt;&gt;UpdateLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;UpdateLabel.Parent" xml:space="preserve">
+    <value>HeaderPanel</value>
+  </data>
+  <data name="&gt;&gt;UpdateLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;AppNameLabel.Name" xml:space="preserve">
+    <value>AppNameLabel</value>
+  </data>
+  <data name="&gt;&gt;AppNameLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AppNameLabel.Parent" xml:space="preserve">
+    <value>HeaderPanel</value>
+  </data>
+  <data name="&gt;&gt;AppNameLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="HeaderPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="HeaderPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="HeaderPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>384, 68</value>
+  </data>
+  <data name="HeaderPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;HeaderPanel.Name" xml:space="preserve">
+    <value>HeaderPanel</value>
+  </data>
+  <data name="&gt;&gt;HeaderPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HeaderPanel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;HeaderPanel.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="AppIconPictureBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>15, 10</value>
@@ -394,30 +470,6 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
   <data name="&gt;&gt;AppNameLabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="HeaderPanel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Top</value>
-  </data>
-  <data name="HeaderPanel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
-  </data>
-  <data name="HeaderPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 68</value>
-  </data>
-  <data name="HeaderPanel.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;HeaderPanel.Name" xml:space="preserve">
-    <value>HeaderPanel</value>
-  </data>
-  <data name="&gt;&gt;HeaderPanel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;HeaderPanel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;HeaderPanel.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
   <data name="RichTextBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
@@ -428,21 +480,25 @@ Holding "SHIFT" will open the folder that ThumbnailExtensions.txt is located at<
     <value>20, 20, 20, 20</value>
   </data>
   <data name="RichTextBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>356, 226</value>
+    <value>354, 228</value>
   </data>
   <data name="RichTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
   <data name="RichTextBox.Text" xml:space="preserve">
-    <value>To use this app start with a right click on a folder to call the context menu and select WinThumbsPreloader &gt; Preload thumbnails in the menu.
+    <value>To use this app, right click on a folder to call the context menu and select WinThumbsPreloader &gt; Preload thumbnails in the menu.
 
-Also you can launch the app from command line:
+This app can also be launched from the command line:
 Usage:
     WinThumbsPreloader.exe [-r -s] &lt;path&gt;
 Options:
+    -d Thumbnail sizes to preload
+    -e Extensions to preload
+    -m Multi-threading with thread count
     -r Recursively preload thumbnails in nested folders.
     -s Silent mode - don't show a progress dialog.
-    -m Multi-Threaded mode
+Example: 
+    WinThumbsPreloader.exe -m 16 -r -d 256,768 -e jpg,png "C:\"
 
 File extensions for thumbnail generation can be added with the "Extensions" button.
 
@@ -472,7 +528,7 @@ Copyright (c) 2018 Dmitry Bruhov</value>
     <value>15, 10, 15, 10</value>
   </data>
   <data name="ContentPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 246</value>
+    <value>384, 248</value>
   </data>
   <data name="ContentPanel.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -489,6 +545,9 @@ Copyright (c) 2018 Dmitry Bruhov</value>
   <data name="&gt;&gt;ContentPanel.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <metadata name="ExtensionsToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -496,7 +555,7 @@ Copyright (c) 2018 Dmitry Bruhov</value>
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>386, 359</value>
+    <value>384, 361</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>

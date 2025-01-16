@@ -119,36 +119,10 @@ namespace WinThumbsPreloader
             catch (Exception) { } // Do nothing
         }
 
-        string[] defaultExtensions = DirectoryScanner.defaultExtensions;
         private void ExtensionsButton_Click(object sender, EventArgs e)
         {
             string executablePath = AppContext.BaseDirectory;
-            string programFilesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            string programFilesThumbsPreloaderFolder = Path.Combine(programFilesFolder, "WinThumbsPreloader");
-            string programFilesExtensionsPath = Path.Combine(programFilesThumbsPreloaderFolder, "ThumbnailExtensions.txt");
-            string programDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinThumbsPreloader");
-            string programDataPath = Path.Combine(programDataFolder, "ThumbnailExtensions.txt");
-            string filePath;
-
-            if (executablePath.StartsWith(programFilesFolder, StringComparison.OrdinalIgnoreCase) &&
-                executablePath.IndexOf("WinThumbsPreloader", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (!Directory.Exists(programDataFolder))
-                {
-                    Directory.CreateDirectory(programDataFolder);
-                }
-
-                if (File.Exists(programFilesExtensionsPath) && !File.Exists(programDataPath))
-                {
-                    File.Copy(programFilesExtensionsPath, programDataPath);
-                }
-
-                filePath = programDataPath;
-            }
-            else
-            {
-                filePath = Path.Combine(executablePath, "ThumbnailExtensions.txt");
-            }
+            string filePath = Path.Combine(executablePath, "ThumbnailExtensions.txt");
 
             try
             {
@@ -159,53 +133,11 @@ namespace WinThumbsPreloader
                 }
                 else
                 {
-                    if (!File.Exists(filePath))
-                    {
-                        File.WriteAllLines(filePath, defaultExtensions);
-                    }
-
-                    Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
+                    ExtensionsForm extensionsForm = new ExtensionsForm();
+                    this.OpenSecondaryFormCentered(extensionsForm);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}", "Failed to open or create ThumbnailExtensions.txt", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
-        private void ResetButton_Click(object sender, EventArgs e)
-        {
-            string executablePath = AppContext.BaseDirectory;
-            string programFilesFolder = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            string programDataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "WinThumbsPreloader");
-            string programDataPath = Path.Combine(programDataFolder, "ThumbnailExtensions.txt");
-
-            string filePath;
-
-            if (executablePath.StartsWith(programFilesFolder, StringComparison.OrdinalIgnoreCase) &&
-                executablePath.IndexOf("WinThumbsPreloader", StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                if (!Directory.Exists(programDataFolder))
-                {
-                    Directory.CreateDirectory(programDataFolder);
-                }
-                filePath = programDataPath;
-            }
-            else
-            {
-                filePath = Path.Combine(executablePath, "ThumbnailExtensions.txt");
-            }
-
-            try
-            {
-                File.WriteAllLines(filePath, defaultExtensions);
-                MessageBox.Show("ThumbnailExtensions.txt has been reset successfully.", "Reset Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + " Try restarting the program as Admin.", "Failed to reset ThumbnailExtensions.txt", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception) { };
         }
 
         private void RichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
@@ -216,6 +148,12 @@ namespace WinThumbsPreloader
         private void UpdateLabel_Click(object sender, EventArgs e)
         {
             if (UpdateLabel.Text == Resources.AboutForm_WinThumbsPreloader_NewVersionAvailable) Process.Start("https://github.com/Mfarooq360/WinThumbsPreloader");
+        }
+
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            HelpForm helpForm = new HelpForm();
+            this.OpenSecondaryFormCentered(helpForm);
         }
     }
 }

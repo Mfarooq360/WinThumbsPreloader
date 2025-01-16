@@ -11,28 +11,40 @@ namespace WinThumbsPreloader
         private bool includeNestedDirectories;
         string[] thumbnailExtensions = ThumbnailExtensions();
         public static string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
+        private string[] thumbnailExtensions;
+        public static string[] defaultExtensions = { "avif", "bmp", "gif", "heic", "heif", "jpg", "jpeg", "mkv", "mov", "mp4", "png", "svg", "tif", "tiff", "webp" };
 
         public DirectoryScanner(string path, bool includeNestedDirectories)
         {
             this.path = path;
             this.includeNestedDirectories = includeNestedDirectories;
+            thumbnailExtensions = GetThumbnailExtensions(commandLineExtensions);
         }
 
-        public static string[] ThumbnailExtensions()
+        private string[] GetThumbnailExtensions(IEnumerable<string> commandLineExtensions)
         {
-            string[] thumbnailExtensions;
+            if (commandLineExtensions != null && commandLineExtensions.Any())
+            {
+                return commandLineExtensions.ToArray();
+            }
+
             try
             {
-                thumbnailExtensions = File.ReadAllLines("ThumbnailExtensions.txt")
-                                          .SelectMany(line => line.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)) // Ignore commas and spaces between extensions
-                                          .Where(ext => !string.IsNullOrWhiteSpace(ext)) // Ignore blank lines or lines with only spaces
-                                          .Select(ext => ext.Trim()).ToArray(); // Trim spaces around each extension
-                if (thumbnailExtensions == null || thumbnailExtensions.Length == 0)
+                var settingsExtensions = Properties.Settings.Default.ExtensionsText
+                    .Split(new[] { ',', ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Where(ext => !string.IsNullOrWhiteSpace(ext))
+                    .Select(ext => ext.Trim())
+                    .ToArray();
+
+                if (settingsExtensions.Length > 0)
                 {
-                    thumbnailExtensions = defaultExtensions;
+                    return settingsExtensions;
                 }
             }
-            catch (FileNotFoundException)
+            catch (Exception) { }
+
+            return defaultExtensions;
+        }
             {
                 thumbnailExtensions = defaultExtensions;
             }
