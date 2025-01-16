@@ -39,7 +39,14 @@ namespace WinThumbsPreloader
             using (Process p = Process.GetCurrentProcess())
                 p.PriorityClass = ProcessPriorityClass.BelowNormal;
 
-            this.thumbnailSizes = thumbnailSizes ?? new List<int> { 256 }; // Default to 256 if no sizes provided
+            if (thumbnailSizes == null || thumbnailSizes.Count == 0)
+            {
+                this.thumbnailSizes = new List<int> { 256 }; // Default to 256 if no sizes provided
+            }
+            else
+            {
+                this.thumbnailSizes = thumbnailSizes;
+            }
 
             // Single file mode for when passing a file through the command line
             FileAttributes fAt = File.GetAttributes(path);
